@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Control Panel — Options</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #0a1a0a;
+      --border: #2a6a2a;
+      --text: #c8ffc8;
+      --text-dim: #80a080;
+      --accent: #40ff40;
+      --btn-bg: #0a1a0a;
+      --btn-hover: #1a3a1a;
+      --error: #ff8080;
+      --info-bg: #060f06;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    h1 {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--accent);
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+    .field-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+    }
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+    .number-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    input[type="number"] {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      width: 90px;
+      outline: none;
+    }
+    input[type="number"]:focus { border-color: var(--accent); }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    button {
+      background: var(--btn-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover { background: var(--btn-hover); border-color: var(--accent); }
+    button.danger { border-color: #6a2a2a; color: #d08080; }
+    button.danger:hover { background: #2a0a0a; border-color: #c04040; color: #ff8080; }
+    #icp-status-msg {
+      font-size: 12px;
+      min-height: 20px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .privacy-note {
+      background: var(--info-bg);
+      border: 1px solid #1a3a1a;
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .privacy-note strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1>⚙ Internet Control Panel — Options</h1>
+
+  <div class="field-group">
+    <label>
+      <input type="checkbox" id="icp-overlay-enabled" />
+      Enable overlay on page load
+    </label>
+    <label>
+      <input type="checkbox" id="icp-read-mode-default" />
+      Enable read mode by default
+    </label>
+    <div class="number-row">
+      <label for="icp-capture-limit">Capture preview character limit</label>
+      <input type="number" id="icp-capture-limit" min="100" max="5000" step="100" />
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="icp-save-btn">Save Settings</button>
+    <button id="icp-export-btn">Export Ledger (JSON)</button>
+    <button id="icp-clear-btn" class="danger">Clear Ledger</button>
+  </div>
+
+  <div id="icp-status-msg"></div>
+
+  <div class="privacy-note">
+    <strong>Local-first privacy model</strong><br>
+    All data is stored locally in your browser via <code>chrome.storage.local</code>.<br>
+    No external network calls are made.<br>
+    No data is sent to any server, analytics service, or third party.<br>
+    You own and control all stored data. Use Export or Clear at any time.
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
