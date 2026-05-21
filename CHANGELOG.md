@@ -1,11 +1,12 @@
 # Changelog
 
 ## 0.1.1
-- Added overlay state persistence helpers.
-- Added overlay position persistence groundwork.
-- Added normalized messaging constants.
-- Added storage helpers for settings and overlay state.
-- Added Phase 1 implementation planning document.
+- Hardened popup response handling with normalized envelope parsing and restricted-page fallbacks.
+- Normalized background message responses to `{ ok, message, data?, error? }`.
+- Applied initial runtime settings (`overlayEnabled`, `readModeDefault`) during content init.
+- Improved healthcheck with `CHANGELOG.md` requirement, extension-source security scans, and version consistency checks.
+- Aligned package/manifest/constants version to `0.1.1`.
+- Updated Phase 1 documentation in README, CURRENT_STATE, TEST_PLAN, and ROADMAP.
 
 ## 0.1.0
 - Initial repo foundation.

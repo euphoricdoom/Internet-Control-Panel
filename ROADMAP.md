@@ -20,13 +20,13 @@ Future ideas belong in `IDEA_PARKING_LOT.md`, not here.
 
 ## Phase 1 — Stable Extension Shell
 
-- [ ] Harden message passing (connection error boundaries)
-- [ ] Improve state persistence (overlay position, collapsed state)
-- [ ] Add extension reload workflow docs
-- [ ] Improve error display in overlay output
-- [ ] Validate command input more robustly
-- [ ] Add overlay drag bounds clamping
-- [ ] Improve popup status refresh after commands
+- [x] Harden message passing (connection error boundaries)
+- [x] Improve state persistence (overlay position, collapsed state)
+- [x] Add extension reload workflow docs
+- [x] Improve error display in overlay output
+- [x] Validate command input more robustly
+- [x] Add overlay drag bounds clamping
+- [x] Improve popup status refresh after commands
 
 ---
 
