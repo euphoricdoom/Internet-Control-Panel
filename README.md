@@ -9,8 +9,9 @@ persistent, user-owned overlay runtime into webpages. It gives you local control
 the browser interface layer — clean pages, capture context, inspect diagnostics, run
 commands, and store local notes — without any cloud dependency.
 
-**Current status:** v0.1.0 — working baseline. The overlay loads, the core commands
-work, and the local ledger is operational.
+**Current status:** v0.1.1 — Phase 1 hardening complete. Messaging is normalized,
+overlay state persistence is stabilized, popup handling is more defensive, and
+healthcheck includes additional security and consistency checks.
 
 ---
 
@@ -52,6 +53,7 @@ Verifies that all required files are present and the manifest is valid.
 ### Hotkey
 
 **Alt + Shift + I** — toggle overlay visibility from anywhere on the page.
+**Alt + Space** — reserved for future command palette (not implemented yet).
 
 ---
 

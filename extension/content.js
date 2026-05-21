@@ -158,6 +158,21 @@
     }
   }
 
+  async function applyInitialSettings() {
+    if (!globalThis.ICPStorage || !globalThis.ICPStorage.getSettings) return;
+    try {
+      const settings = await globalThis.ICPStorage.getSettings();
+      if (settings && settings.overlayEnabled === false) {
+        setOverlayVisible(false, false);
+      }
+      if (settings && settings.readModeDefault === true) {
+        enableReadMode();
+      }
+    } catch (e) {
+      console.warn('[ICP] settings restore failed:', e);
+    }
+  }
+
   try {
     adapter = (globalThis.ICPAdapters && globalThis.ICPAdapters.detect()) || adapter;
     adapterLabel.textContent = `[${adapter.label || 'Generic'}]`;
@@ -339,6 +354,7 @@
 
   registerCommands();
   restoreOverlayState();
+  applyInitialSettings();
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     const type = message && message.type;

@@ -35,6 +35,20 @@ function fileExists(rel) {
   return fs.existsSync(path.join(ROOT, rel));
 }
 
+function walkFiles(dir, allowExts) {
+  const out = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  entries.forEach((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...walkFiles(full, allowExts));
+      return;
+    }
+    if (!allowExts || allowExts.has(path.extname(entry.name))) out.push(full);
+  });
+  return out;
+}
+
 console.log('\n=== Internet Control Panel — Healthcheck ===\n');
 
 // ── Required root docs ──────────────────────────────────────────────────────
@@ -50,6 +64,7 @@ const rootDocs = [
   'IDEA_PARKING_LOT.md',
   'SECURITY_PRIVACY.md',
   'TEST_PLAN.md',
+  'CHANGELOG.md',
   'package.json',
 ];
 rootDocs.forEach(f => check(f, fileExists(f)));
@@ -145,6 +160,60 @@ try {
 }
 if (pkg) {
   check('healthcheck script defined', !!(pkg.scripts && pkg.scripts.healthcheck));
+}
+
+// ── Security scans (extension source only) ───────────────────────────────────
+console.log('\nSecurity scans (extension source):');
+const extensionSourceFiles = walkFiles(EXT, new Set(['.js', '.html', '.css']));
+let evalHits = 0;
+let remoteScriptHits = 0;
+let remoteFetchHits = 0;
+
+extensionSourceFiles.forEach((filePath) => {
+  const rel = path.relative(ROOT, filePath);
+  const source = fs.readFileSync(filePath, 'utf8');
+  if (/\beval\s*\(/.test(source)) {
+    evalHits++;
+    console.log(`  ✗  eval() usage found: ${rel}`);
+  }
+  if (/<script[^>]+src=["']https?:\/\//i.test(source)) {
+    remoteScriptHits++;
+    console.log(`  ✗  remote script tag found: ${rel}`);
+  }
+  if (/\bfetch\s*\(\s*['"`]https?:\/\//i.test(source)) {
+    remoteFetchHits++;
+    console.log(`  ✗  direct remote fetch found: ${rel}`);
+  }
+});
+
+check('No eval() usage in extension source', evalHits === 0);
+check('No remote <script src=\"http(s)://...\"> in extension source', remoteScriptHits === 0);
+check('No direct fetch(\"http(s)://...\") in extension source', remoteFetchHits === 0);
+
+// ── Version consistency ────────────────────────────────────────────────────────
+console.log('\nVersion consistency:');
+let constantsVersion = null;
+try {
+  const constantsPath = path.join(ROOT, 'extension/core/constants.js');
+  const constantsSource = fs.readFileSync(constantsPath, 'utf8');
+  const match = constantsSource.match(/VERSION:\s*['"]([^'"]+)['"]/);
+  constantsVersion = match ? match[1] : null;
+  check('constants VERSION found', !!constantsVersion);
+} catch (e) {
+  check('constants VERSION found', false, e.message);
+}
+
+if (manifest && pkg && constantsVersion) {
+  check(
+    'manifest version matches package version',
+    manifest.version === pkg.version,
+    `${manifest.version} !== ${pkg.version}`,
+  );
+  check(
+    'constants VERSION matches manifest version',
+    constantsVersion === manifest.version,
+    `${constantsVersion} !== ${manifest.version}`,
+  );
 }
 
 // ── Warnings ─────────────────────────────────────────────────────────────────

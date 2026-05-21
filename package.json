@@ -1,6 +1,6 @@
 {
   "name": "internet-control-panel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Local-first browser control overlay and page capture extension.",
   "scripts": {

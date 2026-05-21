@@ -184,7 +184,49 @@ Data should match the visible content of the page.
 
 ---
 
+### TC-21 — Overlay Position Persistence
+
+**Steps:** Drag the panel to a custom position. Reload the page.
+**Expected:** Panel restores to the saved position and remains within viewport bounds.
+
+---
+
+### TC-22 — Collapse Persistence
+
+**Steps:** Collapse the panel with ▲/▼ control. Reload the page.
+**Expected:** Panel remains collapsed until manually expanded.
+
+---
+
+### TC-23 — Overlay Visibility Persistence
+
+**Steps:** Hide panel with command `hide` (or toggle). Reload the page.
+**Expected:** Visibility state persists and can still be toggled with `Alt + Shift + I`.
+
+---
+
+### TC-24 — Settings Compatibility on Runtime Init
+
+**Steps:** In Options, disable overlay on page load and enable read mode default. Reload a normal page.
+**Expected:** Overlay starts hidden; if shown, read mode is active by default.
+
+---
+
+### TC-25 — Popup Defensive Handling
+
+**Steps:** Open popup on a restricted page (`chrome://extensions`) and on a normal webpage.
+**Expected:** Restricted page shows friendly unavailable-runtime status. Normal page actions still work.
+
+---
+
+### TC-26 — Healthcheck Security and Consistency
+
+**Steps:** Run `npm run healthcheck`.
+**Expected:** PASS output includes checks for `CHANGELOG.md`, no `eval`, no direct remote fetch/script tags in extension source, and version consistency across package/manifest/constants.
+
+---
+
 ## Quality Bar
 
 The extension must be boring-stable. A small working system is better than a flashy
-broken system. All 20 test cases must pass before releasing any version increment.
+broken system. All 26 test cases must pass before releasing any version increment.

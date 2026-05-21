@@ -11,6 +11,16 @@ const ICP_DEFAULT_SETTINGS = {
   capturePreviewLimit: 1200,
 };
 
+function ok(message, data) {
+  return { ok: true, message, data: data || null };
+}
+
+function fail(message, error) {
+  const payload = { ok: false, message };
+  if (error) payload.error = String(error && error.message ? error.message : error);
+  return payload;
+}
+
 // ── Install ──────────────────────────────────────────────────────────────────
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
@@ -31,11 +41,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (type === 'ICP_GET_STATUS') {
     chrome.storage.local.get('icpSettings', (result) => {
-      sendResponse({
-        ok: true,
+      if (chrome.runtime.lastError) {
+        sendResponse(fail('Failed to read settings.', chrome.runtime.lastError.message));
+        return;
+      }
+      sendResponse(ok('Background status ready.', {
         settings: result.icpSettings || ICP_DEFAULT_SETTINGS,
         version: chrome.runtime.getManifest().version,
-      });
+        senderTabId: sender && sender.tab ? sender.tab.id : null,
+      }));
     });
     return true; // keep channel open for async sendResponse
   }
@@ -44,14 +58,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Forward to the active tab content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (!tabs || tabs.length === 0) {
-        sendResponse({ ok: false, message: 'No active tab found.' });
+        sendResponse(fail('No active tab found.'));
         return;
       }
       chrome.tabs.sendMessage(tabs[0].id, { type: 'ICP_TOGGLE_OVERLAY' }, (response) => {
         if (chrome.runtime.lastError) {
-          sendResponse({ ok: false, message: chrome.runtime.lastError.message });
+          sendResponse(fail('Failed to toggle overlay in content runtime.', chrome.runtime.lastError.message));
         } else {
-          sendResponse(response || { ok: true });
+          if (!response || typeof response !== 'object') {
+            sendResponse(ok('Overlay toggle forwarded.', null));
+            return;
+          }
+          if (typeof response.ok === 'boolean') {
+            sendResponse(response);
+            return;
+          }
+          sendResponse(ok('Overlay toggle forwarded.', response));
         }
       });
     });
@@ -59,6 +81,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   // Unknown message — respond gracefully
-  sendResponse({ ok: false, message: `Unknown message type: ${type}` });
+  sendResponse(fail(`Unknown message type: ${type || 'missing type'}`));
   return false;
 });
