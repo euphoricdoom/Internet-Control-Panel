@@ -1,0 +1,9 @@
+{
+  "name": "internet-control-panel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first browser control overlay and page capture extension.",
+  "scripts": {
+    "healthcheck": "node scripts/healthcheck.js"
+  }
+}

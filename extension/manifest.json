@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Internet Control Panel",
+  "description": "Local-first browser control overlay and page capture layer.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Internet Control Panel"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "core/constants.js",
+        "core/storage.js",
+        "core/ledger.js",
+        "core/diagnostics.js",
+        "core/adapters.js",
+        "core/commands.js",
+        "core/messaging.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

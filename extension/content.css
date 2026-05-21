@@ -1,0 +1,16 @@
+/**
+ * Internet Control Panel — Content CSS
+ * Minimal styles applied outside Shadow DOM.
+ * Does NOT globally restyle host pages.
+ */
+
+/* ICP host element — all styling is scoped inside Shadow DOM via overlay.css */
+#icp-root {
+  /* Minimal reset to avoid host page CSS leaking into the host div */
+  all: initial;
+  position: fixed;
+  z-index: 2147483647;
+  top: 80px;
+  right: 20px;
+  display: block;
+}

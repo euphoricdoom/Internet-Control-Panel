@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Control Panel</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #0a1a0a;
+      --border: #2a6a2a;
+      --text: #c8ffc8;
+      --text-dim: #80a080;
+      --accent: #40ff40;
+      --btn-bg: #0a1a0a;
+      --btn-hover: #1a3a1a;
+      --error: #ff8080;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      width: 280px;
+      min-height: 200px;
+      padding: 12px;
+      font-size: 13px;
+    }
+    h1 {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--accent);
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+    #icp-status {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 6px 8px;
+      font-size: 11px;
+      color: var(--text-dim);
+      min-height: 36px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    button {
+      background: var(--btn-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 6px 4px;
+      border-radius: 3px;
+      cursor: pointer;
+      text-align: center;
+    }
+    button:hover { background: var(--btn-hover); border-color: var(--accent); }
+    button:active { background: #2a5a2a; }
+    #icp-options-btn { grid-column: 1 / -1; color: var(--text-dim); border-color: #1a4a1a; }
+    #icp-options-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <h1>⚙ Internet Control Panel</h1>
+  <div id="icp-status">Loading…</div>
+  <div class="btn-grid">
+    <button id="icp-toggle-btn">Toggle Overlay</button>
+    <button id="icp-capture-btn">Capture Page</button>
+    <button id="icp-diag-btn">Diagnostics</button>
+    <button id="icp-options-btn">Open Options</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
