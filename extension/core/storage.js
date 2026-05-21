@@ -11,12 +11,6 @@ globalThis.ICPStorage = (() => {
     return typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local;
   }
 
-  /**
-   * Get a value from storage.
-   * @param {string} key
-   * @param {*} fallbackValue
-   * @returns {Promise<*>}
-   */
   async function get(key, fallbackValue = null) {
     if (!storageAvailable()) return fallbackValue;
     return new Promise((resolve) => {
@@ -31,12 +25,6 @@ globalThis.ICPStorage = (() => {
     });
   }
 
-  /**
-   * Set a value in storage.
-   * @param {string} key
-   * @param {*} value
-   * @returns {Promise<void>}
-   */
   async function set(key, value) {
     if (!storageAvailable()) return;
     return new Promise((resolve) => {
@@ -49,11 +37,6 @@ globalThis.ICPStorage = (() => {
     });
   }
 
-  /**
-   * Remove a key from storage.
-   * @param {string} key
-   * @returns {Promise<void>}
-   */
   async function remove(key) {
     if (!storageAvailable()) return;
     return new Promise((resolve) => {
@@ -66,13 +49,6 @@ globalThis.ICPStorage = (() => {
     });
   }
 
-  /**
-   * Append an item to a stored list, capped at maxItems.
-   * @param {string} key
-   * @param {*} item
-   * @param {number} maxItems
-   * @returns {Promise<void>}
-   */
   async function appendToList(key, item, maxItems = 500) {
     const existing = await get(key, []);
     const list = Array.isArray(existing) ? existing : [];
@@ -81,10 +57,6 @@ globalThis.ICPStorage = (() => {
     await set(key, trimmed);
   }
 
-  /**
-   * Clear the ledger from storage.
-   * @returns {Promise<void>}
-   */
   async function clearLedger() {
     await remove(
       globalThis.ICP_CONSTANTS
@@ -93,5 +65,73 @@ globalThis.ICPStorage = (() => {
     );
   }
 
-  return Object.freeze({ get, set, remove, appendToList, clearLedger });
+  async function getSettings() {
+    const defaults = globalThis.ICP_CONSTANTS
+      ? globalThis.ICP_CONSTANTS.DEFAULT_SETTINGS
+      : {};
+
+    const existing = await get(
+      globalThis.ICP_CONSTANTS
+        ? globalThis.ICP_CONSTANTS.STORAGE_KEYS.SETTINGS
+        : 'icpSettings',
+      {},
+    );
+
+    return Object.assign({}, defaults, existing || {});
+  }
+
+  async function setSettings(partialSettings) {
+    const current = await getSettings();
+    const merged = Object.assign({}, current, partialSettings || {});
+
+    await set(
+      globalThis.ICP_CONSTANTS
+        ? globalThis.ICP_CONSTANTS.STORAGE_KEYS.SETTINGS
+        : 'icpSettings',
+      merged,
+    );
+
+    return merged;
+  }
+
+  async function getOverlayState() {
+    const defaults = globalThis.ICP_CONSTANTS
+      ? globalThis.ICP_CONSTANTS.DEFAULT_OVERLAY_STATE
+      : {};
+
+    const existing = await get(
+      globalThis.ICP_CONSTANTS
+        ? globalThis.ICP_CONSTANTS.STORAGE_KEYS.OVERLAY_STATE
+        : 'icpOverlayState',
+      {},
+    );
+
+    return Object.assign({}, defaults, existing || {});
+  }
+
+  async function setOverlayState(partialState) {
+    const current = await getOverlayState();
+    const merged = Object.assign({}, current, partialState || {});
+
+    await set(
+      globalThis.ICP_CONSTANTS
+        ? globalThis.ICP_CONSTANTS.STORAGE_KEYS.OVERLAY_STATE
+        : 'icpOverlayState',
+      merged,
+    );
+
+    return merged;
+  }
+
+  return Object.freeze({
+    get,
+    set,
+    remove,
+    appendToList,
+    clearLedger,
+    getSettings,
+    setSettings,
+    getOverlayState,
+    setOverlayState,
+  });
 })();
